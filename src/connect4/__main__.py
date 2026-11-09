@@ -5,6 +5,7 @@ from connect4.core import COLUMNS, Connect4Game
 from connect4.players import HumanPlayer, Player
 from connect4.models.random_agent import RandomModel
 from connect4.models.minimax_agent import MinimaxModel
+from connect4.models.c4solver_agent import SolverModel
 
 RESET = "\033[0m"
 PIECE_COLOURS = {"X": "\033[91m", "O": "\033[93m"}  # bright red, bright yellow
@@ -68,9 +69,9 @@ def play(players: dict[str, Player]) -> None:
     while not game.game_over:
         player = players[game.current_player]
         column = player.get_move(game)
-        # NOTE: will need to adapt to make compatible with future models
-        if isinstance(player, MinimaxModel):
+        if player.last_scores is not None:
             print_scores(player.last_scores, column)
+        if not isinstance(player, HumanPlayer):
             print_solver_scores(game)
         game.make_move(column)
         print_board(game)
@@ -83,8 +84,8 @@ def play(players: dict[str, Player]) -> None:
 
 def main() -> None:
     players: dict[str, Player] = {
-        "X": MinimaxModel("Player Red", "X"),
-        "O": HumanPlayer("Player Yellow", "O"),
+        "X": MinimaxModel("Player Red", "X", depth=8),
+        "O": SolverModel("Player Yellow", "O"),
     }
     play(players)
 

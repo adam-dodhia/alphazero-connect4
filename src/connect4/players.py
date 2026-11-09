@@ -13,6 +13,8 @@ class Player(ABC):
     def __init__(self, name: str, symbol: str) -> None:
         self.name = name
         self.symbol = symbol
+        # Score per column from the latest get_move; None if this player doesn't produce scores.
+        self.last_scores: dict[int, float] | None = None
 
     @abstractmethod
     def get_move(self, game: Connect4Game) -> int:
