@@ -1,5 +1,6 @@
 """Command line interface for Connect 4."""
 
+from connect4.c4solver import evaluate
 from connect4.core import COLUMNS, Connect4Game
 from connect4.players import HumanPlayer, Player
 from connect4.models.random_agent import RandomModel
@@ -47,6 +48,19 @@ def print_scores(scores: dict[int, float], chosen: int) -> None:
     print()
 
 
+def print_solver_scores(game: Connect4Game) -> None:
+    """Table of the solver's exact score per column and the best move(s) in this position."""
+    scores = evaluate("".join(str(column + 1) for column in game.move_history))
+    best_score = max(score for score in scores if score is not None)
+    best_columns = [str(column + 1) for column, score in enumerate(scores) if score == best_score]
+
+    print("Solver evaluation:")
+    print("Column" + "".join(f"{column + 1:>6}" for column in range(COLUMNS)))
+    print("Score " + "".join(f"{'full' if score is None else score:>6}" for score in scores))
+    print(f"Best move: {', '.join(best_columns)}")
+    print()
+
+
 def play(players: dict[str, Player]) -> None:
     game = Connect4Game()
     print_board(game)
@@ -54,8 +68,10 @@ def play(players: dict[str, Player]) -> None:
     while not game.game_over:
         player = players[game.current_player]
         column = player.get_move(game)
+        # NOTE: will need to adapt to make compatible with future models
         if isinstance(player, MinimaxModel):
             print_scores(player.last_scores, column)
+            print_solver_scores(game)
         game.make_move(column)
         print_board(game)
 
@@ -67,8 +83,8 @@ def play(players: dict[str, Player]) -> None:
 
 def main() -> None:
     players: dict[str, Player] = {
-        "X": MinimaxModel("Player 1", "X"),
-        "O": MinimaxModel("Player 2", "O"),
+        "X": MinimaxModel("Player Red", "X"),
+        "O": HumanPlayer("Player Yellow", "O"),
     }
     play(players)
 

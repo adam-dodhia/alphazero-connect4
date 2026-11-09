@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 *.egg-info/
+src/connect4/7x6.book
+src/connect4/c4solver.exe
