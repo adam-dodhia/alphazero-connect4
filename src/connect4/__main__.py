@@ -1,6 +1,6 @@
 """Command line interface for Connect 4."""
 
-from connect4.c4solver import evaluate
+from connect4.c4solver import evaluate_history
 from connect4.core import COLUMNS, Connect4Game
 from connect4.players import HumanPlayer, Player
 from connect4.models.random_agent import RandomModel
@@ -51,7 +51,7 @@ def print_scores(scores: dict[int, float], chosen: int) -> None:
 
 def print_solver_scores(game: Connect4Game) -> None:
     """Table of the solver's exact score per column and the best move(s) in this position."""
-    scores = evaluate("".join(str(column + 1) for column in game.move_history))
+    scores = evaluate_history(game.move_history)
     best_score = max(score for score in scores if score is not None)
     best_columns = [str(column + 1) for column, score in enumerate(scores) if score == best_score]
 

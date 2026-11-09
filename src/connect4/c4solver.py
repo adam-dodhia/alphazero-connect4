@@ -43,6 +43,11 @@ def evaluate(moves: str) -> list[int | None]:
     return [None if score == FULL_COLUMN else score for score in scores]
 
 
+def evaluate_history(move_history: list[int]) -> list[int | None]:
+    """Same as evaluate(), for a game's zero-indexed move_history."""
+    return evaluate("".join(str(column + 1) for column in move_history))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Print the solver's evaluation of each column."
